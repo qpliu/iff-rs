@@ -38,48 +38,65 @@ fn test_read_file(file: &'static str, expected_id: TypeID, expected_chunks: &[(T
     }
 }
 
+#[allow(non_upper_case_globals)]
+mod typeids {
+    use iff::TypeID;
+    pub const IFZS: TypeID = TypeID([b'I',b'F',b'Z',b'S']);
+    pub const IFhd: TypeID = TypeID([b'I',b'F',b'h',b'd']);
+    pub const CMem: TypeID = TypeID([b'C',b'M',b'e',b'm']);
+    pub const Stks: TypeID = TypeID([b'S',b't',b'k',b's']);
+    pub const IFRS: TypeID = TypeID([b'I',b'F',b'R',b'S']);
+    pub const RIdx: TypeID = TypeID([b'R',b'I',b'd',b'x']);
+    pub const GLUL: TypeID = TypeID([b'G',b'L',b'U',b'L']);
+    pub const Fspc: TypeID = TypeID([b'F',b's',b'p',b'c']);
+    pub const JPEG: TypeID = TypeID([b'J',b'P',b'E',b'G']);
+    pub const PNG:  TypeID = TypeID([b'P',b'N',b'G',b' ']);
+    pub const ZCOD: TypeID = TypeID([b'Z',b'C',b'O',b'D']);
+    pub const IFmd: TypeID = TypeID([b'I',b'F',b'm',b'd']);
+}
+
 #[test]
 fn test_read() {
-    test_read_file("Advent.save", TypeID::from(b"IFZS"), &[
-            (TypeID::from(b"IFhd"), 128),
-            (TypeID::from(b"CMem"), 1229),
-            (TypeID::from(b"Stks"), 380),
+    test_read_file("Advent.save", typeids::IFZS, &[
+            (typeids::IFhd, 128),
+            (typeids::CMem, 1229),
+            (typeids::Stks, 380),
             ]);
-    test_read_file("Alabaster.gblorb", TypeID::from(b"IFRS"), &[
-            (TypeID::from(b"RIdx"), 316),
-            (TypeID::from(b"GLUL"), 1660416),
-            (TypeID::from(b"IFmd"), 2765),
-            (TypeID::from(b"Fspc"), 4),
-            (TypeID::from(b"JPEG"), 24039),
-            (TypeID::from(b"PNG "), 37632),
-            (TypeID::from(b"PNG "), 26019),
-            (TypeID::from(b"PNG "), 19463),
-            (TypeID::from(b"PNG "), 26615),
-            (TypeID::from(b"PNG "), 74396),
-            (TypeID::from(b"PNG "), 9946),
-            (TypeID::from(b"PNG "), 23815),
-            (TypeID::from(b"PNG "), 6413),
-            (TypeID::from(b"PNG "), 13333),
-            (TypeID::from(b"PNG "), 38434),
-            (TypeID::from(b"PNG "), 20583),
-            (TypeID::from(b"PNG "), 103116),
-            (TypeID::from(b"PNG "), 62015),
-            (TypeID::from(b"PNG "), 143187),
-            (TypeID::from(b"PNG "), 261962),
-            (TypeID::from(b"PNG "), 189566),
-            (TypeID::from(b"PNG "), 150125),
-            (TypeID::from(b"PNG "), 3038),
-            (TypeID::from(b"PNG "), 39861),
-            (TypeID::from(b"PNG "), 995),
-            (TypeID::from(b"PNG "), 8124),
-            (TypeID::from(b"PNG "), 108334),
-            (TypeID::from(b"PNG "), 31170),
-            (TypeID::from(b"PNG "), 46181),
+    test_read_file("Alabaster.gblorb", typeids::IFRS, &[
+            (typeids::RIdx, 316),
+            (typeids::GLUL, 1660416),
+            (typeids::IFmd, 2765),
+            (typeids::Fspc, 4),
+            (typeids::JPEG, 24039),
+            (typeids::PNG, 37632),
+            (typeids::PNG, 26019),
+            (typeids::PNG, 19463),
+            (typeids::PNG, 26615),
+            (typeids::PNG, 74396),
+            (typeids::PNG, 9946),
+            (typeids::PNG, 23815),
+            (typeids::PNG, 6413),
+            (typeids::PNG, 13333),
+            (typeids::PNG, 38434),
+            (typeids::PNG, 20583),
+            (typeids::PNG, 103116),
+            (typeids::PNG, 62015),
+            (typeids::PNG, 143187),
+            (typeids::PNG, 261962),
+            (typeids::PNG, 189566),
+            (typeids::PNG, 150125),
+            (typeids::PNG, 3038),
+            (typeids::PNG, 39861),
+            (typeids::PNG, 995),
+            (typeids::PNG, 8124),
+            (typeids::PNG, 108334),
+            (typeids::PNG, 31170),
+            (typeids::PNG, 46181),
             ]);
-    test_read_file("BeingSteve.zblorb", TypeID::from(b"IFRS"), &[
-            (TypeID::from(b"RIdx"), 16),
-            (TypeID::from(b"ZCOD"), 123392),
-            (TypeID::from(b"IFmd"), 1365),
+    test_read_file("BeingSteve.zblorb", typeids::IFRS, &[
+            (typeids::RIdx, 16),
+            (typeids::ZCOD, 123392),
+            (typeids::IFmd, 1365),
             ]);
 }
 
@@ -120,4 +137,13 @@ fn test_create() {
             b'F',b'O',b'R',b'M',0,0,0,16,
             b'T',b'E',b'S',b'T',
             b'T',b'E',b'S',b'T',0,0,0,3,1,2,3,0]);
+}
+
+#[test]
+fn mutable_type_id() {
+    let mut id = TypeID::from(b"TEST");
+    assert_eq!(id, TypeID::from(b"TEST"));
+    id.0[0] = b'R'; // Not really useful, but the real benefit is being able
+    const REST : TypeID = TypeID([b'R',b'E',b'S',b'T']); // to define consts.
+    assert_eq!(id, REST);
 }

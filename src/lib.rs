@@ -2,7 +2,7 @@ use std::io::{Error,ErrorKind,Result,Write};
 
 /// The Type ID of a chunk.
 #[derive(Clone,Copy,Debug,Eq,Hash,Ord,PartialEq,PartialOrd)]
-pub struct TypeID([u8; 4]);
+pub struct TypeID(pub [u8; 4]);
 
 pub const FORM: TypeID = TypeID([b'F',b'O',b'R',b'M']);
 pub const CAT:  TypeID = TypeID([b'C',b'A',b'T',b' ']);
