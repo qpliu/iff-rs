@@ -1,0 +1,16 @@
+[package]
+name = "iff-rs"
+version = "0.1.0"
+authors = ["qpliu@yahoo.com"]
+
+description = "Read and write Interface File Format (IFF)"
+readme = "README.md"
+keywords = ["iff", "interchange", "file", "format"]
+categories = ["parser-implementations"]
+license = "LGPL-3.0"
+
+[badges]
+travis-ci = {repository = "qpliu/iff-rs"}
+
+[lib]
+name = "iff"
