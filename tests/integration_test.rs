@@ -21,20 +21,13 @@ fn test_read_file(file: &'static str, expected_id: TypeID, expected_chunks: &[(T
     let mut vec = Vec::new();
     File::open(testdata(file)).unwrap().read_to_end(&mut vec).unwrap();
 
-    if let Chunk::Envelope{ envelope_id, id, chunks } = Chunk::new(&vec).unwrap() {
-        assert_eq!(envelope_id, iff::FORM);
-        assert_eq!(id, expected_id);
-        assert_eq!(chunks.len(), expected_chunks.len());
-        for item in chunks.iter().zip(expected_chunks) {
-            if let (&Chunk::Data{ id, data },&(expected_id,expected_len)) = item {
-                assert_eq!(id, expected_id);
-                assert_eq!(data.len(), expected_len);
-            } else {
-                assert!(false);
-            }
-        }
-    } else {
-        assert!(false);
+    let chunk = Chunk::new(&vec).unwrap();
+    assert!(chunk.has_envelope_type(iff::FORM, expected_id));
+    let data_chunks = chunk.data_chunks();
+    assert_eq!(data_chunks.len(), expected_chunks.len());
+    for (&(id,data),&(expected_id,expected_len)) in data_chunks.iter().zip(expected_chunks) {
+        assert_eq!(id,expected_id);
+        assert_eq!(data.len(), expected_len);
     }
 }
 

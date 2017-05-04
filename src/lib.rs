@@ -13,10 +13,7 @@ impl TypeID {
     /// Test for Type IDs defined to contain nested chunks.
     pub fn is_envelope(self) -> bool {
         match self {
-            FORM => true,
-            CAT => true,
-            LIST => true,
-            PROP => true,
+            FORM | CAT | LIST | PROP => true,
             _ => false,
         }
     }
@@ -168,5 +165,36 @@ impl<'a> Chunk<'a> {
             },
             &Chunk::Data{ id:_, data } => 8 + data.len(),
         }
+    }
+
+    pub fn has_envelope_type(&self, envelope_type_id: TypeID, type_id: TypeID) -> bool {
+        match self {
+            &Chunk::Envelope{ envelope_id, id, chunks:_ } =>
+                envelope_type_id == envelope_id && type_id == id,
+            _ => false,
+        }
+    }
+
+    pub fn has_data_type(&self, type_id: TypeID) -> bool {
+        match self {
+            &Chunk::Data{ id, data:_ } => type_id == id,
+            _ => false,
+        }
+    }
+
+    pub fn data_chunks(&self) -> Vec<(TypeID,&'a [u8])> {
+        let mut vec = Vec::new();
+        match self {
+            &Chunk::Envelope{ envelope_id:_, id:_, ref chunks } => {
+                for chunk in chunks {
+                    match chunk {
+                        &Chunk::Data{ id, data } => vec.push((id, data)),
+                        _ => (),
+                    }
+                }
+            },
+            _ => (),
+        }
+        vec
     }
 }
